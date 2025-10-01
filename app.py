@@ -6,24 +6,49 @@ DIGITAL MATURITY ASSESSMENT - WEB APP
 import streamlit as st
 import os
 from datetime import datetime
-from anthropic import Anthropic
 from dotenv import load_dotenv
-import json
 
-# Load API key - Compatible with Streamlit Cloud
+# Load environment variables
 load_dotenv()
 
-# Try to get API key from environment or Streamlit secrets
-api_key = os.getenv("ANTHROPIC_API_KEY")
+# Import Anthropic AFTER checking API key
+api_key = None
+
+# Priority 1: Try Streamlit secrets (for Streamlit Cloud)
+try:
+    api_key = st.secrets["ANTHROPIC_API_KEY"]
+except:
+    pass
+
+# Priority 2: Try environment variable (for local)
 if not api_key:
-    try:
-        api_key = st.secrets["ANTHROPIC_API_KEY"]
-    except:
-        st.error("⚠️ API key chưa được cấu hình. Vui lòng liên hệ admin.")
-        st.stop()
+    api_key = os.getenv("ANTHROPIC_API_KEY")
 
-client = Anthropic(api_key=api_key)
+# Check if API key exists
+if not api_key or api_key == "your_api_key_here":
+    st.error("""
+    ⚠️ **API Key chưa được cấu hình!**
+    
+    **Hướng dẫn:**
+    1. Vào Settings (góc dưới phải)
+    2. Chọn tab "Secrets"
+    3. Thêm dòng: `ANTHROPIC_API_KEY = "your-key-here"`
+    4. Click Save
+    
+    **Lấy API key:** https://console.anthropic.com/settings/keys
+    """)
+    st.stop()
 
+# Now import and initialize Anthropic
+try:
+    from anthropic import Anthropic
+    client = Anthropic(api_key=api_key)
+    
+    # Test connection
+    st.sidebar.success("✅ API connected")
+except Exception as e:
+    st.error(f"❌ Không thể kết nối API: {str(e)}")
+    st.stop()
 
 # Cau hinh trang
 st.set_page_config(
@@ -390,3 +415,4 @@ st.markdown("""
 </div>
 
 """, unsafe_allow_html=True)
+
