@@ -49,6 +49,31 @@ try:
 except Exception as e:
     st.error(f"❌ Không thể kết nối API: {str(e)}")
     st.stop()
+# Check if API key exists
+if not api_key or api_key == "your_api_key_here":
+    st.error("""
+    ⚠️ **API Key chưa được cấu hình!**
+    
+    **Hướng dẫn:**
+    1. Vào Settings (góc dưới phải)
+    2. Chọn tab "Secrets"
+    3. Thêm dòng: `ANTHROPIC_API_KEY = "your-key-here"`
+    4. Click Save
+    
+    **Lấy API key:** https://console.anthropic.com/settings/keys
+    """)
+    st.stop()
+
+# Now import and initialize Anthropic
+try:
+    from anthropic import Anthropic
+    client = Anthropic(api_key=api_key)
+    
+    # Test connection
+    st.sidebar.success("✅ API connected")
+except Exception as e:
+    st.error(f"❌ Không thể kết nối API: {str(e)}")
+    st.stop()
 
 # Cau hinh trang
 st.set_page_config(
@@ -415,4 +440,5 @@ st.markdown("""
 </div>
 
 """, unsafe_allow_html=True)
+
 
