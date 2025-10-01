@@ -10,9 +10,20 @@ from anthropic import Anthropic
 from dotenv import load_dotenv
 import json
 
-# Load API key
+# Load API key - Compatible with Streamlit Cloud
 load_dotenv()
-client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+# Try to get API key from environment or Streamlit secrets
+api_key = os.getenv("ANTHROPIC_API_KEY")
+if not api_key:
+    try:
+        api_key = st.secrets["ANTHROPIC_API_KEY"]
+    except:
+        st.error("⚠️ API key chưa được cấu hình. Vui lòng liên hệ admin.")
+        st.stop()
+
+client = Anthropic(api_key=api_key)
+
 
 # Cau hinh trang
 st.set_page_config(
@@ -377,4 +388,5 @@ st.markdown("""
     0123 456 789</p>
     <p style="font-size: 12px;">Báo cáo được tạo bởi AI-Powered Assessment Tool</p>
 </div>
+
 """, unsafe_allow_html=True)
