@@ -1,0 +1,19 @@
+{
+  "questions": [
+    {
+      "id": "q1",
+      "text": "Quan ly du lieu khach hang",
+      "weight": 0.33
+    },
+    {
+      "id": "q2",
+      "text": "Bao cao doanh so",
+      "weight": 0.33
+    },
+    {
+      "id": "q3",
+      "text": "Do luong ROI marketing",
+      "weight": 0.34
+    }
+  ]
+}
